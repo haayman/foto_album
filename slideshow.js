@@ -251,12 +251,3 @@ function loadAlbum($, albumId, elemId) {
       });
     });
 }
-
-// makeBSS(".bss-slides", {
-//   auto: {
-//     speed: 2500,
-//     pauseOnHover: true
-//   },
-// //  swipe: true,
-// //  fullScreen: true
-// });
