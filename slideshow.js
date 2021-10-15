@@ -233,9 +233,9 @@ function loadAlbum($, albumId, elemId) {
         }
         const url = foto.baseUrl + "=w" + width;
         const attributes = index ? {
-          'data-src': url
-
-        } : {src:url}
+          'data-src': url,
+          loading: 'lazy'
+        } : {src:url, loading: 'lazy'}
         const img = $("<img />", attributes);
         figure.append(img);
         elem.append(figure);
