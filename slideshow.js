@@ -1,8 +1,8 @@
-var makeBSS = function(el, options) {
+var makeBSS = function (el, options) {
   var $slideshows = document.querySelectorAll(el), // a collection of all of the slideshow
     $slideshow = {},
     Slideshow = {
-      init: function(el, options) {
+      init: function (el, options) {
         options = options || {}; // if options object not passed in, then set to empty object
         options.auto = options.auto || false; // if options.auto object not passed in, then set to false
         this.opts = {
@@ -23,7 +23,7 @@ var makeBSS = function(el, options) {
             typeof options.fullScreen === "undefined"
               ? false
               : options.fullScreen,
-          swipe: typeof options.swipe === "undefined" ? false : options.swipe
+          swipe: typeof options.swipe === "undefined" ? false : options.swipe,
         };
 
         this.counter = 0; // to keep track of current slide
@@ -43,7 +43,7 @@ var makeBSS = function(el, options) {
           this.addSwipe(this.el);
         }
       },
-      showCurrent: function(i) {
+      showCurrent: function (i) {
         // increment or decrement this.counter depending on whether i === 1 or i === -1
         if (i > 0) {
           this.counter =
@@ -55,25 +55,25 @@ var makeBSS = function(el, options) {
 
         const item = this.$items[this.counter];
         const setActive = () => {
-          [].forEach.call(this.$items, function(el) {
+          [].forEach.call(this.$items, function (el) {
             el.classList.remove("bss-show");
           });
-          item.classList.add('bss-show')
-        }
+          item.classList.add("bss-show");
+        };
 
-        const img = item.querySelector('img');
+        const img = item.querySelector("img");
         // lazy load img
-        if( !img.src) {
-          img.addEventListener('load', () => {
-            setActive()
-          })
-          img.src = img.getAttribute('data-src');
-          img.removeAttribute('data-src');
+        if (!img.src) {
+          img.addEventListener("load", () => {
+            setActive();
+          });
+          img.src = img.getAttribute("data-src");
+          img.removeAttribute("data-src");
         } else {
-          setActive()
+          setActive();
         }
       },
-      injectControls: function(el) {
+      injectControls: function (el) {
         // build and inject prev/next controls
         // first create all the new elements
         var spanPrev = document.createElement("span"),
@@ -93,11 +93,11 @@ var makeBSS = function(el, options) {
         docFrag.appendChild(spanNext);
         el.appendChild(docFrag);
       },
-      addEventListeners: function(el) {
+      addEventListeners: function (el) {
         var that = this;
         el.querySelector(".bss-next").addEventListener(
           "click",
-          function() {
+          function () {
             that.showCurrent(1); // increment & show
           },
           false
@@ -105,13 +105,13 @@ var makeBSS = function(el, options) {
 
         el.querySelector(".bss-prev").addEventListener(
           "click",
-          function() {
+          function () {
             that.showCurrent(-1); // decrement & show
           },
           false
         );
 
-        el.onkeydown = function(e) {
+        el.onkeydown = function (e) {
           e = e || window.event;
           if (e.keyCode === 37) {
             that.showCurrent(-1); // decrement & show
@@ -120,16 +120,16 @@ var makeBSS = function(el, options) {
           }
         };
       },
-      autoCycle: function(el, speed, pauseOnHover) {
+      autoCycle: function (el, speed, pauseOnHover) {
         var that = this,
-          interval = window.setInterval(function() {
+          interval = window.setInterval(function () {
             that.showCurrent(1); // increment & show
           }, speed);
 
         if (pauseOnHover) {
           el.addEventListener(
             "mouseover",
-            function() {
+            function () {
               clearInterval(interval);
               interval = null;
             },
@@ -137,9 +137,9 @@ var makeBSS = function(el, options) {
           );
           el.addEventListener(
             "mouseout",
-            function() {
+            function () {
               if (!interval) {
-                interval = window.setInterval(function() {
+                interval = window.setInterval(function () {
                   that.showCurrent(1); // increment & show
                 }, speed);
               }
@@ -148,7 +148,7 @@ var makeBSS = function(el, options) {
           );
         } // end pauseonhover
       },
-      addFullScreen: function(el) {
+      addFullScreen: function (el) {
         var that = this,
           fsControl = document.createElement("span");
 
@@ -156,23 +156,23 @@ var makeBSS = function(el, options) {
         el.appendChild(fsControl);
         el.querySelector(".bss-fullscreen").addEventListener(
           "click",
-          function() {
+          function () {
             that.toggleFullScreen(el);
           },
           false
         );
       },
-      addSwipe: function(el) {
+      addSwipe: function (el) {
         var that = this,
           ht = new Hammer(el);
-        ht.on("swiperight", function(e) {
+        ht.on("swiperight", function (e) {
           that.showCurrent(-1); // decrement & show
         });
-        ht.on("swipeleft", function(e) {
+        ht.on("swipeleft", function (e) {
           that.showCurrent(1); // increment & show
         });
       },
-      toggleFullScreen: function(el) {
+      toggleFullScreen: function (el) {
         // https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
         if (
           !document.fullscreenElement && // alternative standard method
@@ -201,11 +201,11 @@ var makeBSS = function(el, options) {
             document.webkitExitFullscreen();
           }
         }
-      } // end toggleFullScreen
+      }, // end toggleFullScreen
     }; // end Slideshow object .....
 
   // make instances of Slideshow as needed
-  [].forEach.call($slideshows, function(el) {
+  [].forEach.call($slideshows, function (el) {
     $slideshow = Object.create(Slideshow);
     $slideshow.init(el, options);
   });
@@ -214,7 +214,7 @@ var makeBSS = function(el, options) {
 function loadAlbum($, albumId, elemId) {
   console.log(albumId, elemId);
   const elem = jQuery(`#${elemId}`);
-  const width = Math.min(800, jQuery(elem).width());
+    const width = Math.floor(Math.min(800, jQuery(elem).width()));
   const height = (width * 2) / 3;
 
   elem.css({ maxWidth: width, height });
@@ -222,20 +222,22 @@ function loadAlbum($, albumId, elemId) {
     .getJSON("/wp-admin/admin-ajax.php", {
       action: "plusleo_album",
       albumId: albumId,
-      width: width
+      width: width,
     })
-    .done(function(fotos) {
-      elem.html('') // remove spinner
-      fotos.forEach(function(foto, index) {
+    .done(function (fotos) {
+      elem.html(""); // remove spinner
+      fotos.forEach(function (foto, index) {
         const figure = $("<figure />");
         if (foto.description) {
           figure.append($("<figcaption />").html(foto.description));
         }
         const url = foto.baseUrl + "=w" + width;
-        const attributes = index ? {
-          'data-src': url,
-          loading: 'lazy'
-        } : {src:url, loading: 'lazy'}
+        const attributes = index
+          ? {
+              "data-src": url,
+              // loading: 'lazy'
+            }
+          : { src: url };
         const img = $("<img />", attributes);
         figure.append(img);
         elem.append(figure);
@@ -246,8 +248,8 @@ function loadAlbum($, albumId, elemId) {
       makeBSS("#" + elemId, {
         auto: {
           speed: 2500,
-          pauseOnHover: true
-        }
+          pauseOnHover: true,
+        },
       });
     });
 }
