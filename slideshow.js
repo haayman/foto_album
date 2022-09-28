@@ -211,8 +211,8 @@ var makeBSS = function (el, options) {
   });
 };
 
-function loadAlbum($, albumId, elemId) {
-  console.log(albumId, elemId);
+function loadAlbum($, link, elemId) {
+  console.log(link, elemId);
   const elem = jQuery(`#${elemId}`);
   const width = Math.floor(Math.min(800, jQuery(elem).width()));
   const height = (width * 2) / 3;
@@ -221,7 +221,7 @@ function loadAlbum($, albumId, elemId) {
   jQuery
     .getJSON("/wp-admin/admin-ajax.php", {
       action: "plusleo_album",
-      albumId: albumId,
+      link,
       width: width,
     })
     .done(function (fotos) {
