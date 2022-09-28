@@ -214,7 +214,7 @@ var makeBSS = function (el, options) {
 function loadAlbum($, albumId, elemId) {
   console.log(albumId, elemId);
   const elem = jQuery(`#${elemId}`);
-    const width = Math.floor(Math.min(800, jQuery(elem).width()));
+  const width = Math.floor(Math.min(800, jQuery(elem).width()));
   const height = (width * 2) / 3;
 
   elem.css({ maxWidth: width, height });
