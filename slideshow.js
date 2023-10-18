@@ -218,38 +218,39 @@ function loadAlbum($, link, elemId) {
   const height = (width * 2) / 3;
 
   elem.css({ maxWidth: width, height });
-  jQuery
-    .getJSON("/wp-admin/admin-ajax.php", {
-      action: "plusleo_album",
-      link,
-      width: width,
-    })
-    .done(function (fotos) {
-      elem.html(""); // remove spinner
-      fotos.forEach(function (foto, index) {
-        const figure = $("<figure />");
-        if (foto.description) {
-          figure.append($("<figcaption />").html(foto.description));
-        }
-        const url = foto.baseUrl + "=w" + width;
-        const attributes = index
-          ? {
-              "data-src": url,
-              // loading: 'lazy'
-            }
-          : { src: url };
-        const img = $("<img />", attributes);
-        figure.append(img);
-        elem.append(figure);
-      });
-      elem.append($('<span class="bss-prev>«</span'));
-      elem.append($('<span class="bss-next>»</span'));
-
-      makeBSS("#" + elemId, {
-        auto: {
-          speed: 2500,
-          pauseOnHover: true,
-        },
-      });
+  // TODO: bepaal manier om relatief pad te kunnen gebruiken
+  const albumWorker = new Worker("/wp-content/plugins/foto_album//parseAlbum.js");
+  albumWorker.postMessage(link);
+  albumWorker.onmessage = (e) => {
+    const fotos = e.data;
+    elem.html(""); // remove spinner
+    fotos.forEach(function (foto, index) {
+      const figure = $("<figure />");
+      const url = `${foto}=w${width}`;
+      const attributes = index
+        ? {
+            "data-src": url,
+            // loading: 'lazy'
+          }
+        : { src: url };
+      const img = $("<img />", attributes);
+      figure.append(img);
+      elem.append(figure);
     });
+    elem.append($('<span class="bss-prev>«</span'));
+    elem.append($('<span class="bss-next>»</span'));
+
+    makeBSS("#" + elemId, {
+      auto: {
+        speed: 2500,
+        pauseOnHover: true,
+      },
+    });
+    albumWorker.terminate();
+  };
+
+  albumWorker.onerror = (e) => {
+    elem.html("Er is een fout opgetreden bij het laden van de foto's");
+    albumWorker.terminate();
+  }
 }

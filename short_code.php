@@ -47,23 +47,17 @@ function get_remote_contents($url) {
 }
 
 
-function parse_photos($contents) {
-    $m = NULL;
-    preg_match_all('~\"(http[^"]+)"\,[0-9^,]+\,[0-9^,]+~i', $contents, $m);
-    return array_unique($m[1]);
-}
+// function parse_photos($contents) {
+//     $m = NULL;
+//     preg_match_all('~\"(http[^"]+)"\,[0-9^,]+\,[0-9^,]+~i', $contents, $m);
+//     return array_unique($m[1]);
+// }
 
 
 $ajax = function () {
     try {
         if ($contents = get_remote_contents($_GET['link'])) {
-            $photos = parse_photos($contents);
-            wp_send_json(array_map(function ($photo) {
-                return [
-                    'baseUrl' => $photo,
-                    'description' => "" //alas no longer available :-(
-                ];
-            }, $photos));
+            echo $contents;
         }
     } catch (Exception $e) {
         header('', true, 500);
