@@ -219,38 +219,44 @@ function loadAlbum($, link, elemId) {
 
   elem.css({ maxWidth: width, height });
   // TODO: bepaal manier om relatief pad te kunnen gebruiken
-  const albumWorker = new Worker("/wp-content/plugins/foto_album//parseAlbum.js");
+  const albumWorker = new Worker(
+    "/wp-content/plugins/foto_album/parseAlbum.js"
+  );
   albumWorker.postMessage(link);
   albumWorker.onmessage = (e) => {
     const fotos = e.data;
-    elem.html(""); // remove spinner
-    fotos.forEach(function (foto, index) {
-      const figure = $("<figure />");
-      const url = `${foto}=w${width}`;
-      const attributes = index
-        ? {
-            "data-src": url,
-            // loading: 'lazy'
-          }
-        : { src: url };
-      const img = $("<img />", attributes);
-      figure.append(img);
-      elem.append(figure);
-    });
-    elem.append($('<span class="bss-prev>«</span'));
-    elem.append($('<span class="bss-next>»</span'));
+    if (fotos?.length) {
+      elem.html(""); // remove spinner
+      fotos.forEach(function (foto, index) {
+        const figure = $("<figure />");
+        const url = `${foto}=w${width}`;
+        const attributes = index
+          ? {
+              "data-src": url,
+              // loading: 'lazy'
+            }
+          : { src: url };
+        const img = $("<img />", attributes);
+        figure.append(img);
+        elem.append(figure);
+      });
+      elem.append($('<span class="bss-prev>«</span'));
+      elem.append($('<span class="bss-next>»</span'));
 
-    makeBSS("#" + elemId, {
-      auto: {
-        speed: 2500,
-        pauseOnHover: true,
-      },
-    });
+      makeBSS("#" + elemId, {
+        auto: {
+          speed: 2500,
+          pauseOnHover: true,
+        },
+      });
+    } else {
+      elem.html("Er zijn geen foto's gevonden");
+    }
     albumWorker.terminate();
   };
 
   albumWorker.onerror = (e) => {
     elem.html("Er is een fout opgetreden bij het laden van de foto's");
     albumWorker.terminate();
-  }
+  };
 }

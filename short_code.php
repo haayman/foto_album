@@ -65,5 +65,5 @@ $ajax = function () {
     }
 };
 
-add_action('wp_ajax_plusleo_album', $ajax);
-add_action('wp_ajax_nopriv_plusleo_album', $ajax);
+add_action('wp_ajax_foto_album', $ajax);
+add_action('wp_ajax_nopriv_foto_album', $ajax);
