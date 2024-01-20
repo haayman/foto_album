@@ -20,4 +20,5 @@ onmessage = async ({ data: link }) => {
       await new Promise((r) => setTimeout(r, 500));
     }
   }
+  postMessage([]);
 };
