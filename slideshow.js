@@ -1,7 +1,7 @@
 const currentScript = document.currentScript;
 const workerPath = currentScript.src.replace("slideshow.js", "parseAlbum.js");
 
-var makeBSS = function (el, options) {
+function createSlideshow(el, options) {
   var $slideshows = document.querySelectorAll(el), // a collection of all of the slideshow
     $slideshow = {},
     Slideshow = {
@@ -212,7 +212,7 @@ var makeBSS = function (el, options) {
     $slideshow = Object.create(Slideshow);
     $slideshow.init(el, options);
   });
-};
+}
 
 function getWorkerPath() {
   const scripts = document.getElementsByTagName("script");
@@ -254,7 +254,7 @@ function loadAlbum($, link, elemId) {
         elem.append($('<span class="bss-prev>«</span'));
         elem.append($('<span class="bss-next>»</span'));
 
-        makeBSS("#" + elemId, {
+        createSlideshow("#" + elemId, {
           auto: {
             speed: 2500,
             pauseOnHover: true,
