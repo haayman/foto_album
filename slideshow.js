@@ -1,3 +1,6 @@
+const currentScript = document.currentScript;
+const workerPath = currentScript.src.replace("slideshow.js", "parseAlbum.js");
+
 var makeBSS = function (el, options) {
   var $slideshows = document.querySelectorAll(el), // a collection of all of the slideshow
     $slideshow = {},
@@ -218,48 +221,57 @@ function getWorkerPath() {
   return thisScript?.replace("slideshow.js", "parseAlbum.js");
 }
 
+function showError(elem) {
+  elem.html("Er is een fout opgetreden bij het laden van de foto's");
+}
+
 function loadAlbum($, link, elemId) {
   const elem = jQuery(`#${elemId}`);
-  const width = Math.floor(Math.min(800, jQuery(elem).width()));
-  const height = (width * 2) / 3;
+  try {
+    const width = Math.floor(Math.min(800, jQuery(elem).width()));
+    const height = (width * 2) / 3;
 
-  elem.css({ maxWidth: width, height });
-  const albumWorker = new Worker(getWorkerPath());
-  albumWorker.postMessage(link);
-  albumWorker.onmessage = (e) => {
-    const fotos = e.data;
-    if (fotos?.length) {
-      elem.html(""); // remove spinner
-      fotos.forEach(function (foto, index) {
-        const figure = $("<figure />");
-        const url = `${foto}=w${width}`;
-        const attributes = index
-          ? {
-              "data-src": url,
-              // loading: 'lazy'
-            }
-          : { src: url };
-        const img = $("<img />", attributes);
-        figure.append(img);
-        elem.append(figure);
-      });
-      elem.append($('<span class="bss-prev>«</span'));
-      elem.append($('<span class="bss-next>»</span'));
+    elem.css({ maxWidth: width, height });
+    const albumWorker = new Worker(workerPath || getWorkerPath());
+    albumWorker.postMessage(link);
+    albumWorker.onmessage = (e) => {
+      const fotos = e.data;
+      if (fotos?.length) {
+        elem.html(""); // remove spinner
+        fotos.forEach(function (foto, index) {
+          const figure = $("<figure />");
+          const url = `${foto}=w${width}`;
+          const attributes = index
+            ? {
+                "data-src": url,
+                // loading: 'lazy'
+              }
+            : { src: url };
+          const img = $("<img />", attributes);
+          figure.append(img);
+          elem.append(figure);
+        });
+        elem.append($('<span class="bss-prev>«</span'));
+        elem.append($('<span class="bss-next>»</span'));
 
-      makeBSS("#" + elemId, {
-        auto: {
-          speed: 2500,
-          pauseOnHover: true,
-        },
-      });
-    } else {
-      elem.html("Er zijn geen foto's gevonden");
-    }
-    albumWorker.terminate();
-  };
+        makeBSS("#" + elemId, {
+          auto: {
+            speed: 2500,
+            pauseOnHover: true,
+          },
+        });
+      } else {
+        elem.html("Er zijn geen foto's gevonden");
+      }
+      albumWorker.terminate();
+    };
 
-  albumWorker.onerror = (e) => {
-    elem.html("Er is een fout opgetreden bij het laden van de foto's");
-    albumWorker.terminate();
-  };
+    albumWorker.onerror = (e) => {
+      showError(elem);
+      albumWorker.terminate();
+    };
+  } catch (e) {
+    showError(elem);
+    console.log(e);
+  }
 }
