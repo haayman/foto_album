@@ -211,17 +211,20 @@ var makeBSS = function (el, options) {
   });
 };
 
+function getWorkerPath() {
+  const scripts = document.getElementsByTagName("script");
+  const paths = Array.from(scripts).map((s) => s.src);
+  const thisScript = paths.find((s) => s.match("slideshow"));
+  return thisScript?.replace("slideshow.js", "parseAlbum.js");
+}
+
 function loadAlbum($, link, elemId) {
-  console.log(link, elemId);
   const elem = jQuery(`#${elemId}`);
   const width = Math.floor(Math.min(800, jQuery(elem).width()));
   const height = (width * 2) / 3;
 
   elem.css({ maxWidth: width, height });
-  // TODO: bepaal manier om relatief pad te kunnen gebruiken
-  const albumWorker = new Worker(
-    "/wp-content/plugins/foto_album/parseAlbum.js"
-  );
+  const albumWorker = new Worker(getWorkerPath());
   albumWorker.postMessage(link);
   albumWorker.onmessage = (e) => {
     const fotos = e.data;
