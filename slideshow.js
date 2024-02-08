@@ -229,7 +229,7 @@ function loadAlbum($, link, elemId) {
   const elem = jQuery(`#${elemId}`);
   try {
     const width = Math.floor(Math.min(800, jQuery(elem).width()));
-    const height = (width * 2) / 3;
+    const height = Math.floor((width * 2) / 3);
 
     elem.css({ maxWidth: width, height });
     const albumWorker = new Worker(workerPath || getWorkerPath());
@@ -240,7 +240,7 @@ function loadAlbum($, link, elemId) {
         elem.html(""); // remove spinner
         fotos.forEach(function (foto, index) {
           const figure = $("<figure />");
-          const url = `${foto}=w${width}`;
+          const url = `${foto}=w${width}-h${height}`;
           const attributes = index
             ? {
                 "data-src": url,
